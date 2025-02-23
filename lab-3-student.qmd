@@ -1,3 +1,14 @@
+---
+title: "Lab 3: Exploring Rodents with ggplot2"
+author: "Cherie Wang"
+date: "2/23/2025"
+format: 
+  html:
+    embed-resources: true
+    code-tools: true
+    echo: true
+---
+
 # Part 1: Setup
 
 ## GitHub Workflow
@@ -39,7 +50,7 @@ In the code chunk below, load in the packages necessary for your analysis. You s
 
 ```{r}
 #| label: setup
-
+library(tidyverse)
 ```
 
 # Part 2: Data Context
@@ -72,16 +83,15 @@ We are going to use the `read_csv()` function to load in the `surveys.csv` datas
 #| label: load-data
 
 surveys <- read_csv("data/surveys.csv")
-#glimpse(surveys)
+glimpse(surveys)
 ```
 
 **1. What are the dimensions (# of rows and columns) of these data?**
+# Rows: 30,463 and # Columns: 15
 
-<!-- Run the commented code in the load-data chunk to address this question!  -->
 
 **2. What are the data types of the variables in this dataset?**
-
-<!-- Run the commented code in the load-data chunk to address this question!  -->
+Double, Character and date are the data types in this dataset.
 
 # Part 3: Exploratory Data Analysis with **`ggplot2`**
 
@@ -107,6 +117,15 @@ Let's get started!
 ```{r}
 #| label: scatterplot
 
+ggplot(data = surveys, 
+       mapping = aes(x = weight, y = hindfoot_length)) +
+  geom_point(alpha = 0.5) +
+  labs(title = "Relationship of Weight vs Hindfoot Length in species", 
+       subtitle = "evaluating how different species weight and hindfoot length relate to one another",
+       x = "Weight (g)", 
+       y = "Hindfoot Length (mm)") +
+  facet_wrap(~species_id) +
+  theme_light()
 ```
 
 We can see there are **a lot** of points plotted on top of each other. Let's try and modify this plot to extract more information from it.
@@ -136,7 +155,16 @@ It takes a larger cognitive load to read text that is rotated. It is common prac
 ```{r}
 #| label: boxplot
 
-
+ggplot(data = surveys, aes(x = species_id,
+                           y = weight)) +  
+  geom_boxplot(outlier.shape = NA) +  
+  geom_jitter(color = "springgreen4",
+              alpha = 0.5) +  
+  labs(title = "Range of Weight in Various Species",
+       x = "Species ID",
+       y = "Weight (grams)") +  
+  theme(axis.text.x = element_text(angle = 45, 
+                                   hjust = 1)) 
 ```
 
 **9. Create side-by-side boxplots to visualize the distribution of weight within each species.**
@@ -178,6 +206,15 @@ Some people (and journals) prefer for boxplots to be stacked with a specific ori
 ```{r}
 #| label: rotated-boxplot
 
+ggplot(data = surveys, aes(y = species_id,
+                           x = weight)) +  
+  geom_boxplot(outlier.shape = NA) +  
+  geom_jitter(color = "springgreen4",
+              alpha = 0.2) +  
+  labs(title = "Range of Weight in Various Species",
+       y = "Species ID",
+       x = "Weight (grams)") +  
+  theme(axis.text.y = element_text(angle = 0)) 
 ```
 
 Notice how vertically stacked boxplots make the species labels more readable than horizontally stacked boxplots (even when the axis labels are rotated). This is good practice!
